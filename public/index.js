@@ -47,40 +47,7 @@ var rotationOffset = fxrand()*Math.PI*2;
 var smallRotation = ~~(fxrand()*32);
 
 // Renderquotes, for quirky render fun
-var renderQuotes = [
-"...and in that moment, the new century was born.",
-"Believe nothing that you hear...",
-"...but there's nothing there, not even a beat.",
-"Chaos gave way to a clockwork world...",
-"First there was light, and then there was no-light...",
-"For our clock does not tick seconds, but years...",
-"For the first time in their lives there was no clock...",
-"Gone is the ideal of a universe whose course follows strict rules...",
-"He hoped he was waiting for nothing at all...",
-"It was more than darkness...",
-"Leaves that rustled, twigs that scraped...",
-"Listen to the sound of the universe...",
-"Our clocks do not measure time...",
-"Repent, Harlequin...",
-"Reticulating splines...",
-"Same time tomorrow...",
-"Sixteen candles burn in her mind...",
-"The alternatives are clear...",
-"The final result of the calculation lay before me...",
-"The firmament was rent asunder...",
-"The hours of Folly are measured by the clock...",
-"The innocent, the innocent, Mandus...",
-"The sinister, the terrible, never deceive...",
-"The universe hides in light...",
-"The world before your eyes is finite...",
-"The world is a machine...",
-"The wrong method with the wrong technique...",
-"There is no time without change...",
-"They are dancing in a room in which the clocks have no hands...",
-"This is the great lesson...",
-"Villains, dissemble no more!",
-"We must go on, because we can't turn back...",
-"Walls seemed to shift and advance..."];
+var renderQuotes = ["The alternatives are clear...", "...and in that moment, the new century was born.", "...a mere clockwork wonder, swinging in a vast vacuum...", "Believe nothing that you hear...", "...but there's nothing there, not even a beat.", "Chaos gave way to a clockwork world...", "The door that wakes in darkness...", "The final result of the calculation lay before me...", "First there was light, and then there was no-light...", "The firmament was rent asunder...", "The flicker, the bluish light... getting closer somehow...", "For our clock does not tick seconds, but years...", "For the first time in their lives there was no clock...", "Gone is the ideal of a universe whose course follows strict rules...", "He hoped he was waiting for nothing at all...", "The hours of Folly are measured by the clock...", "I am Tik-Tok, the Royal Army of Oz...", "The innocent, the innocent, Mandus...", "I sit upon a black throne in the shadows but they shall not see me...", "It was more than darkness...", "Leaves that rustled, twigs that scraped...", "Listen to the sound of the universe...", "Our clocks do not measure time...", "Repent, Harlequin...", "Reticulating splines...", "Same time tomorrow...", "The sinister, the terrible, never deceive...", "Sixteen candles burn in her mind...", "Supposing I hadn't counted the cogs properly...", "There is no time without change...", "They are dancing in a room in which the clocks have no hands...", "They must know by now I'm in here trembling...", "The universe hides in light...", "This is the great lesson...", "Villains, dissemble no more!", "The world before your eyes is finite...", "The world is a machine...", "The wrong method with the wrong technique...", "We must go on, because we can't turn back...", "Walls seemed to shift and advance..."];
 var renderQuote = renderQuotes[~~(fxrand()*renderQuotes.length)];
 
 // Density value
@@ -101,8 +68,7 @@ var overlayKey = ~~(fxrand()*fxrand()*maxFrames)
 
 // Dark Mode
 var darkMode = (fxrand()*fxrand() > 0.5);
-
-var renderInfo = "Render mode for this instance is " + renderModeDescriptions[renderMode] + ", using a " + paletteDescription + " palette. The render is in " + (darkMode == true ? "dark mode" : "light mode") + " with a faint tracework of " + (overlayModeSquare == true ? "squares" : "circles") + " overlaid to add texture and depth.\n\nThe rendering process comprises " + maxFrames + " frames, and has a density of " + densityValue + " out of a possible 128. Initial rotation is " + ~~(rotationOffset*100)/100 + " radians, with further increments of " + (1/smallRotation == ~~(1/smallRotation) ? " 1 radian " : "1/" + smallRotation + " of a radian") + " per iteration. Large-scale texture is added every " + overlayKey + " frames. All output is generated entirely in code.";
+var renderInfo = "Render mode for this instance is " + renderModeDescriptions[renderMode] + ", using a " + paletteDescription + " palette. The render is in " + (darkMode == true ? "dark mode" : "light mode") + " with a faint tracework of " + (overlayModeSquare == true ? "squares" : "circles") + " overlaid to add texture and depth.\n\nThe rendering process comprises " + maxFrames + " frames, and has a density of " + densityValue + " out of a possible 128. Initial rotation is " + ~~(rotationOffset*100)/100 + " radians, with further increments of " + (1/smallRotation == ~~(1/smallRotation) ? "1 radian" : "1/" + smallRotation + " of a radian") + " per iteration. Large-scale texture is added every " + overlayKey + " frames. All output is generated entirely in code.";
 
 window.$fxhashFeatures = {
 	"Colour Mode": (darkMode == true ? "Dark" : "Light"),
