@@ -25,10 +25,11 @@ var dimWhileRendering = true;
 var maxFrames = 128+~~(fxrand()*fxrand()*256);
 
 // Select a light background hue
-var backgroundHue = (240+~~(fxrand()*fxrand()*360))%360;
+var backgroundHue = (240+~~(fxrand()*360))%360;
 
 // There are a number of render modes. They are weighted.
-var renderMode = ~~(fxrand()*fxrand()*7);
+var renderModes = [0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6];
+var renderMode = renderModes[~~(fxrand()*renderModes.length)];
 var renderModeDescriptions = ["short dark lines directed outward from the central focus, with the possible inclusion of white circles forming concentric striations towards the middle of the canvas", "dark-outlined circles, filled with translucent white, fading both towards the edges of the canvas and as rendering progresses", "delicately-outlined rectangles with a white fill, fading as rendering progresses", "light circles, overlaid with a slightly-darker outline", "coloured rectangles, with stroke increasing as rendering progresses", "a crosshatch of delicate white and dark strokes, intersecting at the centre", "slightly-rotated rectangles, with a directional stroke following the rotation of the render"];
 var shortRenderModeDescriptions = ["Short dark lines ", "Dark-outlined circles", "Delicately-outlined rectangles", "Light circles", "Coloured rectangles", "A crosshatch of delicate strokes", "A directional stroke"];
 var showInfo = true;
@@ -57,6 +58,7 @@ var renderQuotes = [
 "Our clocks do not measure time...",
 "Repent, Harlequin...",
 "Reticulating splines...",
+"Same time tomorrow...",
 "Sixteen candles burn in her mind...",
 "The alternatives are clear...",
 "The final result of the calculation lay before me...",
