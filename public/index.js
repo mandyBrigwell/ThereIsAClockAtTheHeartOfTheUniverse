@@ -24,8 +24,13 @@ var dimWhileRendering = true;
 // The render takes place over a limited number of frames
 var maxFrames = 128+~~(fxrand()*fxrand()*256);
 
-// Select a light background hue
-var backgroundHue = (240+~~(fxrand()*360))%360;
+// Select a light background hue from weighted possibilities.
+// "Did I ever tell you that blue was my favourite colour?"—Sutter Cane
+var backgroundHues = [0, 60, 60, 120, 120, 180, 180, 240, 240, 240, 300, 300];
+var selectedHue = ~~(fxrand()*backgroundHues.length);
+var backgroundHue = backgroundHues[selectedHue]+~~(fxrand()*60);
+var paletteDescriptions = ["red", "yellow", "yellow", "green", "green", "cyan", "cyan", "blue", "blue", "blue", "magenta", "magenta"];
+var paletteDescription = paletteDescriptions[selectedHue];
 
 // There are a number of render modes. They are weighted.
 var renderModes = [0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6];
@@ -97,12 +102,13 @@ var overlayKey = ~~(fxrand()*fxrand()*maxFrames)
 // Dark Mode
 var darkMode = (fxrand()*fxrand() > 0.5);
 
-var renderInfo = "Render mode for this instance is " + renderModeDescriptions[renderMode] + ". Density is " + densityValue + " out of 128. Initial rotation is " + ~~(rotationOffset*100)/100 + " radians, with further increments of " + (1/smallRotation == ~~(1/smallRotation) ? " 1 radian " : "1/" + smallRotation + " of a radian") + " per iteration. The rendering process comprises " + maxFrames + " frames, with large-scale texture added every " + overlayKey + " frames over a background hue of " + backgroundHue + ". The render is in " + (darkMode == true ? "dark mode" : "light mode") + " with a faint tracework of " + (overlayModeSquare == true ? "squares" : "circles") + " overlaid to add texture and depth. All artwork is generated in code.";
+var renderInfo = "Render mode for this instance is " + renderModeDescriptions[renderMode] + ", using a " + paletteDescription + " palette. The render is in " + (darkMode == true ? "dark mode" : "light mode") + " with a faint tracework of " + (overlayModeSquare == true ? "squares" : "circles") + " overlaid to add texture and depth.\n\nThe rendering process comprises " + maxFrames + " frames, and has a density of " + densityValue + " out of a possible 128. Initial rotation is " + ~~(rotationOffset*100)/100 + " radians, with further increments of " + (1/smallRotation == ~~(1/smallRotation) ? " 1 radian " : "1/" + smallRotation + " of a radian") + " per iteration. Large-scale texture is added every " + overlayKey + " frames. All output is generated entirely in code.";
 
 window.$fxhashFeatures = {
-	"Background": (darkMode == true ? "Dark" : "Light"),
+	"Colour Mode": (darkMode == true ? "Dark" : "Light"),
 	"Render Mode": shortRenderModeDescriptions[renderMode],
-	"Density": densityValue
+	"Density": densityValue,
+	"Palette": paletteDescription[0].toUpperCase() + paletteDescription.substring(1)
 }
 
 function setup() {
@@ -373,7 +379,7 @@ function draw() {
 		textStyle(BOLD);
 		text("There is a Clock at the Heart of the Universe", 0, -screenSize*0.45, screenSize*0.9);
 		textStyle(ITALIC);
-		text("\n" + renderInfo + (frameCount < maxFrames ? "\nPress [i] to show/hide." : ""), 0, -screenSize*0.45, screenSize*0.9);
+		text("\n" + renderInfo + (frameCount < maxFrames ? "\n\nPress [i] to show/hide this information." : ""), 0, -screenSize*0.45, screenSize*0.9);
 	}
 
 }
