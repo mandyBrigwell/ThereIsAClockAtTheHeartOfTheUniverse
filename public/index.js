@@ -6,7 +6,7 @@ let randomSeedValue = ~~(fxrand()*12345);
 let noiseSeedValue = ~~(fxrand()*56789);
 let screenSize;
 
-var mainGraphics, overlayGraphics, finishedRender;
+var mainGraphics, clockGraphics, overlayGraphics, finishedRender;
 var fullRes = 2048;
 
 // Four possible rotations for the noise layer
@@ -17,9 +17,6 @@ var overlayModeSquare = (fxrand()*fxrand() > 0.4);
 // This sets an offset, weighted towards the centre
 var offsetX = (fxrand()*fullRes*0.3)-(fxrand()*fullRes*0.3);
 var offsetY = (fxrand()*fullRes*0.3)-(fxrand()*fullRes*0.3);
-
-// Mainly for testing: defaults to fade in the image while rendering takes place
-var dimWhileRendering = true;
 
 // The render takes place over a limited number of frames
 var maxFrames = 128+~~(fxrand()*fxrand()*256);
@@ -37,8 +34,19 @@ var renderModes = [0, 0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 4, 4, 5, 5, 6];
 var renderMode = renderModes[~~(fxrand()*renderModes.length)];
 var renderModeDescriptions = ["short dark lines directed outward from the central focus, with the possible inclusion of white circles forming concentric striations towards the middle of the canvas", "dark-outlined circles, filled with translucent white, fading both towards the edges of the canvas and as rendering progresses", "delicately-outlined rectangles with a white fill, fading as rendering progresses", "light circles, overlaid with a slightly-darker outline", "coloured rectangles, with stroke increasing as rendering progresses", "a crosshatch of delicate white and dark strokes, intersecting at the centre", "slightly-rotated rectangles, with a directional stroke following the rotation of the render"];
 var shortRenderModeDescriptions = ["Short dark lines ", "Dark-outlined circles", "Delicately-outlined rectangles", "Light circles", "Coloured rectangles", "A crosshatch of delicate strokes", "A directional stroke"];
+
+// Flags for information overlay
 var showInfo = true;
 var showInfoInteracted = false;
+
+// Secret clock mode variables
+var clockAlpha = 1;
+var clockAlphaTarget = 1;
+var clockDistances = [-128, 32, 64, 64, 128, 128, 128, 256, 256, 512];
+var clockDistance = clockDistances[~~(fxrand()*clockDistances.length)];
+
+// Mainly for testing: defaults to fade in the image while rendering takes place
+var dimWhileRendering = false;
 
 // Constant rotation offset for main rotation
 var rotationOffset = fxrand()*Math.PI*2;
@@ -97,6 +105,14 @@ function setup() {
 		mainGraphics.background(backgroundHue, 60, 345);
 	}
 	
+	// Clock graphics buffer
+	clockGraphics = createGraphics(fullRes, fullRes);
+	clockGraphics.colorMode(HSB, 360);
+		clockGraphics.drawingContext.shadowOffsetY = 0;
+		clockGraphics.drawingContext.shadowOffsetX = 0;
+		clockGraphics.drawingContext.shadowBlur = fullRes/128;
+		clockGraphics.drawingContext.shadowColor = "#000000";
+
 	// Overlay graphics buffer
 	overlayGraphics = createGraphics(fullRes, fullRes);
 	overlayGraphics.colorMode(HSB, 360);
@@ -284,11 +300,7 @@ function draw() {
 	// Display graphics layers
 	background(360);
 	translate(screenSize/2, screenSize/2);
-	noFill();
-	strokeWeight(max(screenSize/512, 1));
-	stroke(0);
-	rect(0, 0, screenSize*0.975, screenSize*0.975);
-	
+			
 	if (frameCount < maxFrames) {
 		image(mainGraphics, 0, 0, screenSize*0.975, screenSize*0.975);
 		image(overlayGraphics, 0, 0, screenSize*0.975, screenSize*0.975);
@@ -329,11 +341,52 @@ function draw() {
 		if (!showInfoInteracted) {
 			showInfo = false;
 		}
-		
 	} else {
 		// Rendering is done: our draw loop displays the finished artwork
 		image(finishedRender, 0, 0, screenSize, screenSize);
 	}
+	
+	// Clock
+	if (clockAlpha != 0) {
+		clockGraphics.clear();
+		clockGraphics.resetMatrix();
+		clockGraphics.translate(mainGraphics.width/2, mainGraphics.height/2);
+		clockGraphics.translate(offsetX, offsetY);
+		clockGraphics.fill(360, 0.1*clockAlpha*360);
+		var s = map(second(), 0, 60, 0, TWO_PI) - HALF_PI;
+		var theDate = new Date();
+		s += theDate.getMilliseconds()/10000;
+		var m = map(minute() + norm(second(), 0, 60), 0, 60, 0, TWO_PI) - HALF_PI;
+		var h = map(hour() + norm(minute(), 0, 60), 0, 24, 0, TWO_PI * 2) - HALF_PI;
+
+		if (darkMode || renderMode == 4) {
+			clockGraphics.stroke(360, clockAlpha*360);
+		} else {
+			clockGraphics.stroke(0, clockAlpha*360);
+		}
+		clockGraphics.strokeWeight(2);
+		clockGraphics.line(cos(s)*clockDistance, sin(s)*clockDistance, cos(s)*fullRes, sin(s)*fullRes);
+		clockGraphics.strokeWeight(4);
+		clockGraphics.line(cos(m)*clockDistance, sin(m)*clockDistance, cos(m)*fullRes, sin(m)*fullRes);
+		clockGraphics.strokeWeight(6);
+		clockGraphics.line(cos(h)*clockDistance, sin(h)*clockDistance, cos(h)*fullRes, sin(h)*fullRes);
+		image(clockGraphics, 0, 0, screenSize*0.975, screenSize*0.975);
+	}
+	
+	if (clockAlphaTarget > clockAlpha) {
+		clockAlpha = min(1, clockAlpha + 0.025);
+	}
+	
+	if (clockAlphaTarget < clockAlpha) {
+		clockAlpha = max(0, clockAlpha - 0.025);
+	}
+	
+	// Border rectangle
+	noFill();
+	strokeWeight(max(screenSize/512, 1));
+	stroke(0);
+	rect(0, 0, screenSize*0.975, screenSize*0.975);
+
 	
 	// Display the description text. This option is toggled with 'i'.
 	if (showInfo) {
@@ -362,6 +415,12 @@ function keyPressed() {
 		showInfo = !showInfo;
 		showInfoInteracted = true;
 	}
+	
+	// Toggle super-secret clock display
+	if (key == 'c' && frameCount > maxFrames) {
+		clockAlphaTarget = (clockAlphaTarget+1)%2;
+	}
+	
 }
 
 function windowResized() {
