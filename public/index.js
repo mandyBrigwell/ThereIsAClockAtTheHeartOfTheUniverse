@@ -346,16 +346,15 @@ function draw() {
 		image(finishedRender, 0, 0, screenSize, screenSize);
 	}
 	
-	// Clock
+	// Clock mode
 	if (clockAlpha != 0) {
 		clockGraphics.clear();
 		clockGraphics.resetMatrix();
 		clockGraphics.translate(mainGraphics.width/2, mainGraphics.height/2);
 		clockGraphics.translate(offsetX, offsetY);
 		clockGraphics.fill(360, 0.1*clockAlpha*360);
-		var s = map(second(), 0, 60, 0, TWO_PI) - HALF_PI;
 		var theDate = new Date();
-		s += theDate.getMilliseconds()/10000;
+		var s = map(second() + theDate.getMilliseconds()/1000, 0, 60, 0, TWO_PI) - HALF_PI;
 		var m = map(minute() + norm(second(), 0, 60), 0, 60, 0, TWO_PI) - HALF_PI;
 		var h = map(hour() + norm(minute(), 0, 60), 0, 24, 0, TWO_PI * 2) - HALF_PI;
 
