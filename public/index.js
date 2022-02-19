@@ -45,8 +45,8 @@ var clockAlphaTarget = 0;
 var clockDistances = [-128, 32, 64, 64, 128, 128, 128, 256, 256, 512];
 var clockDistance = clockDistances[~~(fxrand()*clockDistances.length)];
 
-// Mainly for testing: defaults to fade in the image while rendering takes place
-var dimWhileRendering = false;
+// Fade in the image while rendering takes place
+var dimWhileRendering = true;
 
 // Constant rotation offset for main rotation
 var rotationOffset = fxrand()*Math.PI*2;
