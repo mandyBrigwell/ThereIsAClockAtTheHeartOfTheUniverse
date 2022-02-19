@@ -40,8 +40,8 @@ var showInfo = true;
 var showInfoInteracted = false;
 
 // Secret clock mode variables
-var clockAlpha = 1;
-var clockAlphaTarget = 1;
+var clockAlpha = 0;
+var clockAlphaTarget = 0;
 var clockDistances = [-128, 32, 64, 64, 128, 128, 128, 256, 256, 512];
 var clockDistance = clockDistances[~~(fxrand()*clockDistances.length)];
 
